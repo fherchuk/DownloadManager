@@ -1,0 +1,117 @@
+# Ignore build artifacts
+*.o
+*.obj
+*.exe
+*.out
+*.dSYM/
+*.a
+*.so
+*.lib
+*.dll
+
+# Ignore build directories
+bin/
+build/
+dist/
+Debug/
+Release/
+
+# Ignore temporary files
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Ignore dependency files
+*.d
+*.dep
+
+# Ignore compiled libraries
+*.lib
+*.dll
+*.a
+*.la
+*.lo
+*.jar
+
+# Ignore Mac-specific files
+.DS_Store
+
+# Ignore Windows-specific files
+Thumbs.db
+Desktop.ini
+
+# Ignore generated files
+*.gch
+*.pch
+
+# Ignore CMake files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+build/
+
+# Ignore VSCode specific files
+.vscode/
+.vscode/*
+
+# Ignore user-specific files
+*.user
+*.rsuser
+
+# Ignore log files and databases
+*.log
+*.sql
+*.sqlite
+
+# Ignore other editor-specific files
+*~
+
+# Ignore executable files
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Ignore directories used by IDEs
+.idea/
+.project/
+.classpath
+
+# Ignore node_modules directory if you use any node.js tool
+node_modules/
+
+# Ignore Python virtual environments
+venv/
+__pycache__/
+
+# Ignore miscellaneous
+*.stackdump
+*.bak
+*.sav
+*.backup
+*.old
+*.orig
+*.swp
+*.swo
+*.swn
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.mod
+*.ilk
+*.exp
+*.lib
+*.idb
+*.obj
+*.pch
+*.pdb
+*.tlb
+*.tlh
+*.bak
+*.old
+*.log
+*.vs
