@@ -1,67 +1,42 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <Windows.h>
+#include "sorter.h"
 
-void MonitorDirectory(const char *directory);
-
-int main()
-{
-    const char *directory = "E:\\downloads";
-    printf("Monitoring directory: %s\n", directory);
-    MonitorDirectory(directory);
-    return 0;
-}
-
-void MonitorDirectory(const char *directory)
+extern char* directory;
+void MonitorDirectory()
 {
     HANDLE hDir;
     char buffer[1024];
     DWORD bytesReturned;
 
-    // Create a directory handle
-    hDir = CreateFile(directory,
-                      FILE_LIST_DIRECTORY,
-                      FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
-                      NULL,
-                      OPEN_EXISTING,
-                      FILE_FLAG_BACKUP_SEMANTICS,
-                      NULL);
+    hDir = CreateFile(directory, FILE_LIST_DIRECTORY, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
 
-    if (hDir == INVALID_HANDLE_VALUE)
-    {
+    if (hDir == INVALID_HANDLE_VALUE) {
         fprintf(stderr, "Error opening directory: %s\n", directory);
         return;
     }
 
     while (1)
     {
-        // Wait for changes in the directory
-        if (ReadDirectoryChangesW(hDir,
-                                  buffer,
-                                  sizeof(buffer),
-                                  TRUE,
-                                  FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_ATTRIBUTES | FILE_NOTIFY_CHANGE_SIZE | FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_CREATION | FILE_NOTIFY_CHANGE_SECURITY,
-                                  &bytesReturned,
-                                  NULL,
-                                  NULL))
+        if (ReadDirectoryChangesW(hDir, buffer, sizeof(buffer), FALSE,
+            FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_ATTRIBUTES | FILE_NOTIFY_CHANGE_SIZE | FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_CREATION | FILE_NOTIFY_CHANGE_SECURITY,
+            &bytesReturned, NULL, NULL))
         {
-            char *ptr = buffer;
-            FILE_NOTIFY_INFORMATION *pNotify;
+            char* ptr = buffer;
+            FILE_NOTIFY_INFORMATION* pNotify;
             do
             {
-                pNotify = (FILE_NOTIFY_INFORMATION *)ptr;
-
-                // Display the name of the file that was added
+                pNotify = (FILE_NOTIFY_INFORMATION*)ptr;
                 if (pNotify->Action == FILE_ACTION_ADDED)
                 {
                     char fileName[MAX_PATH];
                     int len = WideCharToMultiByte(CP_UTF8, 0, pNotify->FileName, pNotify->FileNameLength / sizeof(WCHAR), fileName, MAX_PATH, NULL, NULL);
                     fileName[len] = '\0';
-                    printf("New file added: %s\n", fileName);
-                    system("bash scripts/init.sh");
+                    printf("New file downloaded: %s\n", fileName);
+                    sort(directory);
                 }
 
-                // Move to the next change notification entry
                 ptr += pNotify->NextEntryOffset;
             } while (pNotify->NextEntryOffset != 0);
         }
@@ -71,6 +46,5 @@ void MonitorDirectory(const char *directory)
             break;
         }
     }
-
     CloseHandle(hDir);
 }
